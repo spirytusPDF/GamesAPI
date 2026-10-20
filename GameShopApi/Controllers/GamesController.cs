@@ -62,7 +62,7 @@ namespace GameShopApi.Controllers
             }
 
         }
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPost("{id:int:min(1)}/complete")]
@@ -75,7 +75,7 @@ namespace GameShopApi.Controllers
                 if (gamePass.IsCompleted)
                     return StatusCode(409, "The game is already passed");
                 else games[index].IsCompleted = true;
-                return Ok(gamePass);
+                return StatusCode(204);
             }
             else return NotFound();
         }
@@ -97,11 +97,13 @@ namespace GameShopApi.Controllers
         }
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpDelete("/completed")]
+        [HttpDelete("completed")]
         public ActionResult GameDeleteCompleted()
         {
+            int before = games.Count;
             games.RemoveAll(g => g.IsCompleted);
-            return Ok(games);
+            int current = before-games.Count;
+            return Ok(current);
         }
     }
 }
